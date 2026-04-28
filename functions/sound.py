@@ -50,3 +50,15 @@ def processValues(df: pd.DataFrame):
     result["L_max"] = np.max(readings)
 
     return result
+
+# Calculating L_day^c from Brink et al. 2018
+def getL_den(L_Aeq_day: np.ndarray, L_Aeq_eve: np.ndarray):
+    # 7 for 7 hours from 0700 to 1400
+    L_Aeq_day = np.pow(10, L_Aeq_day / 10) * 7
+    # 5 for 5 hours from 1400 to 1900
+    L_Aeq_eve = np.pow(10, L_Aeq_eve / 10) * 5
+
+    L_day = 10 * np.log10((L_Aeq_day + L_Aeq_eve) / 12)
+    L_den = L_day + 1.5
+
+    return L_day
