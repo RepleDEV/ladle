@@ -101,6 +101,7 @@ def main():
 
     columns = ["filepath"] + analysis_columns
     anal_df = pd.DataFrame(analyses, columns=columns)
+    anal_df = anal_df.sort_values(by=["point"])
 
     if len(points_column):
         anal_df = anal_df.assign(point=pd.Series(points_column).values)
