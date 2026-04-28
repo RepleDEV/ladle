@@ -81,8 +81,6 @@ import math
 from pandas import DataFrame
 def run_kmeans(df: DataFrame):
     print(f"Running Kmeans.")
-    
-    df = df.sort_values(by=["point"])
 
     day_df = df[df["time"] == "day"]
     eve_df = df[df["time"] == "eve"]
@@ -99,6 +97,7 @@ def run_kmeans(df: DataFrame):
 
     L_TNI = soundf.getL_TNI(L_90_day, L_90_eve, L_10_day, L_10_eve)
 
+    # Create list of [L_den, L_TNI] vectors of each point
     points = np.vstack((L_den, L_TNI)).transpose()
 
     RUNS_PER_K = 50
