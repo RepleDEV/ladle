@@ -62,3 +62,21 @@ def getL_den(L_Aeq_day: np.ndarray, L_Aeq_eve: np.ndarray):
     L_den = L_day + 1.5
 
     return L_day
+
+def getL_TNI(
+        L_90_day: np.ndarray, 
+        L_90_eve: np.ndarray, 
+        L_10_day: np.ndarray, 
+        L_10_eve: np.ndarray
+        ):
+    L_90_day = np.pow(10, L_90_day / 10) * 7
+    L_10_day = np.pow(10, L_10_day / 10) * 7
+    L_90_eve = np.pow(10, L_90_eve / 10) * 7
+    L_10_eve = np.pow(10, L_10_eve / 10) * 7
+
+    L_90 = 10 * np.log10((L_90_day + L_90_eve) / 12)
+    L_10 = 10 * np.log10((L_10_day + L_10_eve) / 12)
+
+    L_TNI = 4 * (L_10 - L_90) + L_90 - 30
+
+    return L_TNI
