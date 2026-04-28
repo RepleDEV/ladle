@@ -101,16 +101,32 @@ def main():
 
     columns = ["filepath"] + analysis_columns
     anal_df = pd.DataFrame(analyses, columns=columns)
-    anal_df = anal_df.sort_values(by=["point"])
 
     if len(points_column):
         anal_df = anal_df.assign(point=pd.Series(points_column).values)
     if len(day_night_column):
         anal_df = anal_df.assign(time=pd.Series(day_night_column).values)
 
+    anal_df = anal_df.sort_values(by=["point"])
+
+    day_df = anal_df[anal_df["time"] == "day"]
+    eve_df = anal_df[anal_df["time"] == "eve"]
+
+    L_Aeq_day = day_df["L_Aeq"].to_numpy()
+    L_Aeq_eve = eve_df["L_Aeq"].to_numpy()
+
+    L_den = soundf.getL_den(L_Aeq_day, L_Aeq_eve)
+
+    L_90_day = day_df["L_90"].to_numpy()
+    L_90_eve = eve_df["L_90"].to_numpy()
+    L_10_day = day_df["L_10"].to_numpy()
+    L_10_eve = eve_df["L_10"].to_numpy()
+
+    L_TNI = soundf.getL_TNI(L_90_day, L_90_eve, L_10_day, L_10_eve)
+
     if (args.kmeans and defaultSetup):
         print("Proceeding to k-means analysis.")
-        kmeans.run_kmeans(anal_df)
+        kmeans.run_kmeans(L_den, L_TNI)
 
 if __name__ == "__main__":
     main()
