@@ -17,6 +17,8 @@ import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
+import functions.sound as soundf
+
 rng = np.random.default_rng()
 
 KMEANS_MAX_ITERATIONS = 1e5
@@ -85,35 +87,17 @@ def run_kmeans(df: DataFrame):
     day_df = df[df["time"] == "day"]
     eve_df = df[df["time"] == "eve"]
 
-    # TODO: Refactor
+    L_Aeq_day = day_df["L_Aeq"].to_numpy()
+    L_Aeq_eve = eve_df["L_Aeq"].to_numpy()
 
-    # Calculating L_day^c from Brink et al. 2018
-    L_day_arr_first = day_df["L_Aeq"].to_numpy()
-    L_day_arr_second = eve_df["L_Aeq"].to_numpy()
-    
-    # 7 for 7 hours from 0700 to 1400
-    L_day_arr_first = np.pow(10, L_day_arr_first / 10) * 7
-    # 5 for 5 hours from 1400 to 1900
-    L_day_arr_second = np.pow(10, L_day_arr_second / 10) * 5
+    L_den = soundf.getL_den(L_Aeq_day, L_Aeq_eve)
 
-    L_day = 10 * np.log10((L_day_arr_first + L_day_arr_second) / 12)
-    L_den = L_day + 1.5
+    L_90_day = day_df["L_90"].to_numpy()
+    L_90_eve = eve_df["L_90"].to_numpy()
+    L_10_day = day_df["L_10"].to_numpy()
+    L_10_eve = eve_df["L_10"].to_numpy()
 
-    L_90_arr_first = day_df["L_90"].to_numpy()
-    L_10_arr_first = day_df["L_10"].to_numpy()
-    L_90_arr_second = eve_df["L_90"].to_numpy()
-    L_10_arr_second = eve_df["L_10"].to_numpy()
-
-    L_90_arr_first = np.pow(10, L_90_arr_first / 10) * 7
-    L_10_arr_first = np.pow(10, L_10_arr_first / 10) * 7
-    L_90_arr_second = np.pow(10, L_90_arr_second / 10) * 7
-    L_10_arr_second = np.pow(10, L_10_arr_second / 10) * 7
-
-    L_90 = 10 * np.log10((L_90_arr_first + L_90_arr_second) / 12)
-    L_10 = 10 * np.log10((L_10_arr_first + L_10_arr_second) / 12)
-
-
-    L_TNI = 4 * (L_10 - L_90) + L_90 - 30
+    L_TNI = soundf.getL_TNI(L_90_day, L_90_eve, L_10_day, L_10_eve)
 
     points = np.vstack((L_den, L_TNI)).transpose()
 
