@@ -34,38 +34,6 @@ def dfFromCSV(filepath: str, drop_duplicates = True):
 
     return df
 
-def getAnalysisValues(df: pd.DataFrame):
-    timestamps = pd.to_datetime(df["timestamp"]).to_list()
-    timestamp_deltas = [0]
-
-    for i in range(1, len(timestamps)):
-        now = timestamps[i]
-        prev = timestamps[i - 1]
-        delta_ms = (now - prev).microseconds // 1000
-
-        timestamp_deltas.append(delta_ms)
-
-    # timestamp_mean = np.mean(np.array(timestamp_deltas))
-
-    readings = df["reading"].to_numpy()
-    delta_cumsum = np.cumsum(np.array(timestamp_deltas))
-    T_ms = 5 * 60 * 1000
-    total_indexes = np.argmax(delta_cumsum > T_ms) + 1
-
-    readings = readings[:total_indexes]
-    deltas = timestamp_deltas[:total_indexes]
-
-    result = {}
-
-    result["L_Aeq"] = soundf.getL_Aeq(readings, deltas);
-
-    result["L_10"] = np.percentile(readings, 90)
-    result["L_90"] = np.percentile(readings, 10)
-    result["L_min"] = np.min(readings)
-    result["L_max"] = np.max(readings)
-
-    return result
-
 import os
 import re 
 def getPointsFilepaths(ddir: str = ""):
@@ -125,7 +93,7 @@ def main():
     analyses = []
     for fp in filepaths:
         df = dfFromCSV(fp)
-        analysis = getAnalysisValues(df)
+        analysis = soundf.processValues(df)
 
         analysis_values = list(analysis.values()) 
         data = [fp] + analysis_values
