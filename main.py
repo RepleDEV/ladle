@@ -54,7 +54,6 @@ def getPointNumber(filepath: str):
     return -1
 
 def main():
-
     args = ap.parseArgs()
 
     defaultSetup = True
@@ -112,6 +111,5 @@ def main():
         print("Proceeding to k-means analysis.")
         kmeans.run_kmeans(anal_df)
 
-    
 if __name__ == "__main__":
     main()
