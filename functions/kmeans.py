@@ -75,6 +75,14 @@ def getTotalVariance(clusters):
 
     return variance
 
+def resolvePoints(points: np.ndarray, clusters_points: np.ndarray):
+    indexes = []
+    for c in clusters_points:
+        for i, p in enumerate(points):
+            if (c == p).all():
+                indexes.append(i)
+    return indexes
+
 SCATTER_CLUSTERS_LIST_COLORS = ["red", "royalblue", "limegreen", "gold", "cyan", "fuchsia", "sandybrown", "blueviolet"]
 
 import math
@@ -124,7 +132,14 @@ def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray):
     print("Plotting clusters for chosen k value.")
     chosen_clusters = list_clusters[chosen_k - 1]
     flattened_clusters = np.array([p for c in chosen_clusters for p in c])
-    [x, y] = flattened_clusters.transpose() # [L_den, L_TNI]
+    clusters_points = flattened_clusters.transpose() # [L_den, L_TNI]
+    [x, y] = clusters_points
+
+    points_indexes = resolvePoints(points, clusters_points.transpose())
+
+    for i, p_index in enumerate(points_indexes): 
+        plt.text(x[i] + 0.2, y[i] + 0.2, f"Point {p_index + 1}")
+
     cluster_colors = []
     for i, c in enumerate(chosen_clusters):
         cluster_colors.extend([SCATTER_CLUSTERS_LIST_COLORS[i]] * len(c))
