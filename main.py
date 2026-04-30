@@ -53,6 +53,41 @@ def getPointNumber(filepath: str):
 
     return -1
 
+from typing import List
+def getProcessedDataPointsDF(filepaths: List):
+    processed_values_columns = []
+    day_night_column = []
+    points_column = []
+    data_list = []
+    for fp in filepaths:
+        df = dfFromCSV(fp)
+        processedValues = soundf.processValues(df)
+
+        analysis_values = list(processedValues.values()) 
+        data = [fp] + analysis_values
+
+        if not len(processed_values_columns):
+            processed_values_columns = list(processedValues.keys())
+
+        point_number = getPointNumber(fp)
+        points_column.append(point_number)
+        day_night_column.append("eve" if "eve" in fp else "day")
+
+        data_list.append(data)
+
+    columns = ["filepath"] + processed_values_columns
+    proc_df = pd.DataFrame(data_list, columns=columns)
+
+    columns = ["filepath"] + processed_values_columns
+    proc_df = pd.DataFrame(data_list, columns=columns)
+
+    proc_df = proc_df.assign(point=pd.Series(points_column).values)
+    proc_df = proc_df.assign(time=pd.Series(day_night_column).values)
+
+    proc_df = proc_df.sort_values(by=["point"])
+
+    return proc_df
+
 def main():
     args = ap.parseArgs()
 
@@ -74,43 +109,11 @@ def main():
         return
 
     print("Running analysis.")
-
-    analysis_columns = []
-    day_night_column = []
-    points_column = []
-    analyses = []
-    for fp in filepaths:
-        df = dfFromCSV(fp)
-        analysis = soundf.processValues(df)
-
-        analysis_values = list(analysis.values()) 
-        data = [fp] + analysis_values
-
-        if not len(analysis_columns):
-            analysis_columns = list(analysis.keys())
-
-
-        if defaultSetup:
-            point_number = getPointNumber(fp)
-            points_column.append(point_number)
-            day_night_column.append("eve" if "eve" in fp else "day")
-
-        analyses.append(data)
-
+    df = getProcessedDataPointsDF(filepaths)
     print("Analysis finished.")
 
-    columns = ["filepath"] + analysis_columns
-    anal_df = pd.DataFrame(analyses, columns=columns)
-
-    if len(points_column):
-        anal_df = anal_df.assign(point=pd.Series(points_column).values)
-    if len(day_night_column):
-        anal_df = anal_df.assign(time=pd.Series(day_night_column).values)
-
-    anal_df = anal_df.sort_values(by=["point"])
-
-    day_df = anal_df[anal_df["time"] == "day"]
-    eve_df = anal_df[anal_df["time"] == "eve"]
+    day_df = df[df["time"] == "day"]
+    eve_df = df[df["time"] == "eve"]
 
     L_Aeq_day = day_df["L_Aeq"].to_numpy()
     L_Aeq_eve = eve_df["L_Aeq"].to_numpy()
