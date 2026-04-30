@@ -112,11 +112,22 @@ def main():
     df = getProcessedDataPointsDF(filepaths)
     print("Analysis finished.")
 
+    print(df)
+
     day_df = df[df["time"] == "day"]
     eve_df = df[df["time"] == "eve"]
 
     L_den = soundf.getL_den_from_df(day_df, eve_df)
     L_TNI = soundf.getL_TNI_from_df(day_df, eve_df)
+
+    points_list = day_df["point"].to_list()
+    wholeday_df = pd.DataFrame({
+        "point": points_list,
+        "L_den": L_den,
+        "L_TNI": L_TNI,
+    })
+
+    print(wholeday_df)
 
     if (args.kmeans and defaultSetup):
         print("Proceeding to k-means analysis.")
