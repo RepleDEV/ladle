@@ -115,17 +115,8 @@ def main():
     day_df = df[df["time"] == "day"]
     eve_df = df[df["time"] == "eve"]
 
-    L_Aeq_day = day_df["L_Aeq"].to_numpy()
-    L_Aeq_eve = eve_df["L_Aeq"].to_numpy()
-
-    L_den = soundf.getL_den(L_Aeq_day, L_Aeq_eve)
-
-    L_90_day = day_df["L_90"].to_numpy()
-    L_90_eve = eve_df["L_90"].to_numpy()
-    L_10_day = day_df["L_10"].to_numpy()
-    L_10_eve = eve_df["L_10"].to_numpy()
-
-    L_TNI = soundf.getL_TNI(L_90_day, L_90_eve, L_10_day, L_10_eve)
+    L_den = soundf.getL_den_from_df(day_df, eve_df)
+    L_TNI = soundf.getL_TNI_from_df(day_df, eve_df)
 
     if (args.kmeans and defaultSetup):
         print("Proceeding to k-means analysis.")
