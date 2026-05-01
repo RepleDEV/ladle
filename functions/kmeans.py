@@ -108,7 +108,7 @@ def plotClusters(points: np.ndarray, cluster_indexes: np.ndarray, points_labels:
     cluster_colors = [SCATTER_CLUSTERS_LIST_COLORS[i] for i in cluster_indexes]
 
     # if higher than 2-dimensional data, reduce by PCA
-    if (points.shape[1]):
+    if (points.shape[1] > 2):
         points = PCA(n_components=2).fit_transform(points)
 
     for i, [x, y] in enumerate(points): 
