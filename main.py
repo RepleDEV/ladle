@@ -16,6 +16,7 @@ import numpy as np
 
 import functions.sound as soundf
 import functions.kmeans as kmeans
+import functions.sk.kmeans as sk_kmeans
 import functions.argparser as ap
 
 DEFAULT_DATA_DIRECTORY = "./data/";
@@ -154,6 +155,8 @@ def main():
             case "kmeans":
                 kmeans.run_kmeans(L_den, L_TNI)
                 print("Proceeding to k-means analysis.")
+            case "sk.kmeans":
+                sk_kmeans.run(L_den, L_TNI)
 
 if __name__ == "__main__":
     main()
