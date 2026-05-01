@@ -149,9 +149,11 @@ def main():
         writeProcessedValues(df.drop(["filepath"], axis=1), wholeday_df, args.outdir)
         print("Done")
 
-    if (args.kmeans and defaultSetup):
-        print("Proceeding to k-means analysis.")
-        kmeans.run_kmeans(L_den, L_TNI)
+    if defaultSetup:
+        match args.analysis:
+            case "kmeans":
+                kmeans.run_kmeans(L_den, L_TNI)
+                print("Proceeding to k-means analysis.")
 
 if __name__ == "__main__":
     main()

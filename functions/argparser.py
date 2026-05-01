@@ -11,7 +11,7 @@ def parseArgs():
     parser.add_argument("-f", "--filepath", type=str, help="filepath to read")
     parser.add_argument("--outdir", type=str, help="file output directory")
 
-    parser.add_argument("--kmeans", action="store_true", help="run k means analysis")
+    parser.add_argument("--analysis", type=str, help="run analysis")
 
     args = parser.parse_args()
 
