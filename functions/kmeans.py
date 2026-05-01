@@ -149,7 +149,7 @@ def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray, point_labels: List[str] = [
             tot_var = getTotalVariance(clusters)
             if tot_var < min_var:
                 min_var = tot_var
-                min_clusters = clusters
+                min_clusters = kmeans_res 
 
             total_runs -= 1
         min_vars.append(min_var)
@@ -168,5 +168,6 @@ def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray, point_labels: List[str] = [
     chosen_clusters = list_clusters[chosen_k - 1]
     flattened_clusters = np.array([p for c in chosen_clusters for p in c])
     clusters_points = flattened_clusters.transpose() # [L_den, L_TNI]
+    clusters_indices = chosen_clusters["indexes"]
 
-    plotClusters(points, chosen_clusters)
+    plotClusters(points, clusters_indices)
