@@ -85,9 +85,30 @@ def resolvePoints(points: np.ndarray, clusters_points: np.ndarray):
 
 SCATTER_CLUSTERS_LIST_COLORS = ["red", "royalblue", "limegreen", "gold", "cyan", "fuchsia", "sandybrown", "blueviolet"]
 
+from typing import List
+from sklearn.decomposition import PCA
+def plotClusters(points: np.ndarray, cluster_indexes: np.ndarray, points_labels: List[str] = []):
+    if not len(points_labels):
+        range_list = list(range(len(points)))
+        points_labels = [f"Point {p + 1}" for p in range_list]
+
+    cluster_colors = [SCATTER_CLUSTERS_LIST_COLORS[i] for i in cluster_indexes]
+
+    # if higher than 2-dimensional data, reduce by PCA
+    if (points.shape[1]):
+        points = PCA(n_components=2).fit_transform(points)
+
+    for i, [x, y] in enumerate(points): 
+        label = points_labels[i]
+        plt.text(x[i] + 0.2, y[i] + 0.2, f"Point {label}")
+
+    [x, y] = points
+    plt.scatter(x,y, c=cluster_colors)
+    plt.show()
+
 import math
 from pandas import DataFrame
-def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray):
+def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray, point_labels: List[str] = []):
     print(f"Running Kmeans.")
 
     # Create list of [L_den, L_TNI] vectors of each point
