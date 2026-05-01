@@ -113,7 +113,7 @@ def plotClusters(points: np.ndarray, cluster_indexes: np.ndarray, points_labels:
 
     for i, [x, y] in enumerate(points): 
         label = points_labels[i]
-        plt.text(x[i] + 0.2, y[i] + 0.2, f"Point {label}")
+        plt.text(x + 0.2, y + 0.2, f"Point {label}")
 
     [x, y] = points
     plt.scatter(x,y, c=cluster_colors)
