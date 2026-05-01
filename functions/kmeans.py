@@ -22,7 +22,7 @@ import functions.sound as soundf
 rng = np.random.default_rng()
 
 KMEANS_MAX_ITERATIONS = 1e5
-def kmeans(k: int, points: np.ndarray):
+def kmeans(k: int, points: np.ndarray) -> dict[str, list]:
     centroids = rng.choice(points, k, replace=False) # k random points
 
     # print(f"Running kmeans iteration. k = {k}, points shape: {points.shape}")
@@ -59,8 +59,21 @@ def kmeans(k: int, points: np.ndarray):
 
         # Convergence check
         if (newCentroids==centroids).all():
-            # print("\nDone")
-            return clusters
+            indexes = []
+
+            # Resolve cluster indexes
+            for p in points:
+                for i, c in enumerate(clusters):
+                    for cluster_point in c:
+                        if (cluster_point == p).all():
+                            indexes.append(i)
+                            break
+            result = {
+                "clusters": clusters,
+                "centroids": centroids,
+                "indexes": indexes
+            }
+            return result
         else:
             centroids = newCentroids
 
@@ -131,7 +144,8 @@ def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray, point_labels: List[str] = [
         
         # Run through k means total_runs times, extracting the run with the least total WCSS
         while total_runs > 0:
-            clusters = kmeans(int(k), points)
+            kmeans_res = kmeans(int(k), points)
+            clusters = kmeans_res["clusters"]
             tot_var = getTotalVariance(clusters)
             if tot_var < min_var:
                 min_var = tot_var
@@ -154,16 +168,5 @@ def run_kmeans(L_den: np.ndarray, L_TNI: np.ndarray, point_labels: List[str] = [
     chosen_clusters = list_clusters[chosen_k - 1]
     flattened_clusters = np.array([p for c in chosen_clusters for p in c])
     clusters_points = flattened_clusters.transpose() # [L_den, L_TNI]
-    [x, y] = clusters_points
 
-    points_indexes = resolvePoints(points, clusters_points.transpose())
-
-    for i, p_index in enumerate(points_indexes): 
-        plt.text(x[i] + 0.2, y[i] + 0.2, f"Point {p_index + 1}")
-
-    cluster_colors = []
-    for i, c in enumerate(chosen_clusters):
-        cluster_colors.extend([SCATTER_CLUSTERS_LIST_COLORS[i]] * len(c))
-
-    plt.scatter(x, y, c=cluster_colors)
-    plt.show()
+    plotClusters(points, chosen_clusters)
