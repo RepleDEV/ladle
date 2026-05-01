@@ -53,6 +53,21 @@ def getPointNumber(filepath: str):
 
     return -1
 
+from pathlib import Path
+from datetime import datetime
+def writeProcessedValues(processed_df: pd.DataFrame, wholeday_df: pd.DataFrame, outdir: str):
+    # Create dir if doesn't exist yet
+    Path(outdir).mkdir(parents=True, exist_ok=True)
+
+    now = datetime.today()
+    isoformat = now.isoformat()
+    
+    if not outdir.endswith("/"):
+        outdir = outdir + "/"
+
+    processed_df.to_csv(outdir + f"main_{isoformat}.csv", index=False)
+    wholeday_df.to_csv(outdir + f"sec_{isoformat}.csv", index=False)
+
 from typing import List
 def getProcessedDataPointsDF(filepaths: List):
     processed_values_columns = []
@@ -128,6 +143,11 @@ def main():
     })
 
     print(wholeday_df)
+
+    if (args.outdir):
+        print(f"Outputting analysis to {args.outdir}")
+        writeProcessedValues(df.drop(["filepath"], axis=1), wholeday_df, args.outdir)
+        print("Done")
 
     if (args.kmeans and defaultSetup):
         print("Proceeding to k-means analysis.")
