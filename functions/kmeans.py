@@ -115,7 +115,7 @@ def plotClusters(points: np.ndarray, cluster_indexes: np.ndarray, points_labels:
         label = points_labels[i]
         plt.text(x + 0.2, y + 0.2, f"Point {label}")
 
-    [x, y] = points
+    [x, y] = points.transpose()
     plt.scatter(x,y, c=cluster_colors)
     plt.show()
 
