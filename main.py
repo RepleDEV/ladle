@@ -153,7 +153,7 @@ def main():
     if defaultSetup:
         match args.analysis:
             case "kmeans":
-                kmeans.run_kmeans(L_den, L_TNI)
+                kmeans.run_kmeans(L_den, L_TNI, wholeday_df["point"].to_list())
                 print("Proceeding to k-means analysis.")
             case "sk.kmeans":
                 sk_kmeans.run(L_den, L_TNI)
