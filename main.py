@@ -156,7 +156,7 @@ def main():
                 kmeans.run_kmeans(L_den, L_TNI, wholeday_df["point"].to_list())
                 print("Proceeding to k-means analysis.")
             case "sk.kmeans":
-                sk_kmeans.run(np.array([L_den, L_TNI]).transpose())
+                sk_kmeans.run(np.array([L_den, L_TNI]).transpose(), points_list)
 
 if __name__ == "__main__":
     main()
