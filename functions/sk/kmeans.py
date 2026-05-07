@@ -5,10 +5,8 @@ import numpy as np
 
 from sklearn.cluster import KMeans
 
-def run(L_den: np.ndarray, L_TNI: np.ndarray):
-    data = np.vstack((L_den, L_TNI)).transpose()
-
-    kmeans = KMeans(init="k-means++", n_clusters=4)
+def run(data: np.ndarray):
+    kmeans = KMeans(n_clusters=4)
     kmeans.fit(data)
 
     h = 0.02
