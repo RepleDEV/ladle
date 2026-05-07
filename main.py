@@ -145,6 +145,16 @@ def main():
 
     print(wholeday_df)
 
+    L_min_day = day_df["L_min"].to_list()
+    L_max_day = day_df["L_max"].to_list()
+    L_min_eve = eve_df["L_min"].to_list()
+    L_max_eve = eve_df["L_max"].to_list()
+
+    L_90_day = day_df["L_90"].to_list()
+    L_10_day = day_df["L_10"].to_list()
+    L_90_eve = eve_df["L_90"].to_list()
+    L_10_eve = eve_df["L_10"].to_list()
+
     if (args.outdir):
         print(f"Outputting analysis to {args.outdir}")
         writeProcessedValues(df.drop(["filepath"], axis=1), wholeday_df, args.outdir)
@@ -156,7 +166,8 @@ def main():
                 kmeans.run_kmeans(L_den, L_TNI, wholeday_df["point"].to_list())
                 print("Proceeding to k-means analysis.")
             case "sk.kmeans":
-                sk_kmeans.run(np.array([L_den, L_TNI]).transpose(), points_list)
+                data = np.array([L_den, L_90_day, L_90_eve, L_10_day, L_10_eve, L_max_day, L_max_eve]).transpose()
+                sk_kmeans.run(data, points_list)
 
 if __name__ == "__main__":
     main()
