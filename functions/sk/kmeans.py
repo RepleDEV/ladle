@@ -7,7 +7,7 @@ from sklearn.cluster import KMeans
 from ..kmeans import plotClusters
 
 def run(data: np.ndarray, point_indexes):
-    kmeans = KMeans(n_clusters=5)
+    kmeans = KMeans(n_clusters=4, random_state=42)
     kmeans.fit(data)
 
     # h = 0.02
